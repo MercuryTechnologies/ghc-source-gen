@@ -79,7 +79,7 @@ listPromotedTy = withPlaceHolder (withEpAnnNotUsed HsExplicitListTy promoted) . 
 
 tuplePromotedTy :: [HsType'] -> HsType'
 #if MIN_VERSION_ghc(9,13,0)
-tuplePromotedTy = withPlaceHolders (withEpAnnNotUsed (HsExplicitTupleTy (NoEpTok, NoEpTok, NoEpTok) NotPromoted)) . map mkLocated
+tuplePromotedTy = withPlaceHolders (withEpAnnNotUsed (HsExplicitTupleTy (NoEpTok, NoEpTok, NoEpTok) promoted)) . map mkLocated
 #elif MIN_VERSION_ghc(9,10,0)
 tuplePromotedTy = withPlaceHolders (withEpAnnNotUsed (HsExplicitTupleTy [])) . map mkLocated
 #else
