@@ -30,7 +30,8 @@ import PlaceHolder (PlaceHolder(..))
 #endif
 
 #if MIN_VERSION_ghc(9,10,0)
-import GHC.Parser.Annotation (noAnn)
+import GHC.Parser.Annotation (AnnSortKey(..), noAnn)
+import GHC.Types.SrcLoc (GenLocated(L))
 #endif
 
 import GHC.SourceGen.Pat.Internal (parenthesize)
@@ -49,7 +50,12 @@ valBinds :: [RawValBind] -> HsLocalBinds'
 -- This case prevents GHC from printing an empty "where" clause:
 valBinds [] = noExt EmptyLocalBinds
 valBinds vbs =
-#if MIN_VERSION_ghc(9,10,0)
+#if MIN_VERSION_ghc(9,13,0)
+    HsValBinds noAnn
+        $ withNoAnnSortKey ValBinds
+            (map mkLocated binds)
+            (map mkLocated sigs)
+#elif MIN_VERSION_ghc(9,10,0)
     HsValBinds noAnn
         $ withNoAnnSortKey ValBinds
             (listToBag $ map mkLocated binds)
@@ -120,7 +126,11 @@ matchGroup context matches =
   where
     matches' = mkLocated $ map (mkLocated . mkMatch) matches
     mkMatch :: RawMatch -> Match' LHsExpr'
-#if MIN_VERSION_ghc(9,10,0)
+#if MIN_VERSION_ghc(9,13,0)
+    mkMatch r = noExt Match context
+                    (L noAnn (map builtPat $ map parenthesize $ rawMatchPats r))
+                    (mkGRHSs $ rawMatchGRHSs r)
+#elif MIN_VERSION_ghc(9,10,0)
     mkMatch r = Match [] context
                     (map builtPat $ map parenthesize $ rawMatchPats r)
                     (mkGRHSs $ rawMatchGRHSs r)
