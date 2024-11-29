@@ -62,7 +62,7 @@ import GHC.Tc.Types.Evidence (HsWrapper(WpHole))
 #endif
 
 #if MIN_VERSION_ghc(9,10,0)
-import GHC.Parser.Annotation (noAnn)
+import GHC.Parser.Annotation (EpUniToken (..), noAnn)
 #endif
 import GHC.SourceGen.Binds.Internal
 import GHC.SourceGen.Name
@@ -77,7 +77,10 @@ import GHC.SourceGen.Type.Internal (sigWcType)
 -- > typeSigs ["f", "g"] (var "A")
 typeSigs :: HasValBind t => [OccNameStr] -> HsType' -> t
 typeSigs names t =
-#if MIN_VERSION_ghc(9,10,0)
+#if MIN_VERSION_ghc(9,13,0)
+    sigB $ TypeSig noAnn (map (typeRdrName . unqual) names)
+        $ sigWcType t
+#elif MIN_VERSION_ghc(9,10,0)
     sigB $ TypeSig ann (map (typeRdrName . unqual) names)
         $ sigWcType t
   where
@@ -124,7 +127,11 @@ funBindsWithFixity fixity name matches = bindB $ withPlaceHolder
     name' = valueRdrName $ unqual name
     occ = valueOccName name
     fixity' = fromMaybe (bool Prefix Infix $ isSymOcc occ) fixity
+#if MIN_VERSION_ghc(9,13,0)
+    context = FunRhs name' fixity' NoSrcStrict noAnn
+#else
     context = FunRhs name' fixity' NoSrcStrict
+#endif
 
 -- | Defines a function or value.
 --
@@ -327,7 +334,9 @@ stmt e =
 -- > =====
 -- > bvar "x" <-- var "act"
 (<--) :: Pat' -> HsExpr' -> Stmt'
-#if MIN_VERSION_ghc(9,10,0)
+#if MIN_VERSION_ghc(9,13,0)
+p <-- e = withPlaceHolder $ BindStmt NoEpUniTok (builtPat p) (mkLocated e)
+#elif MIN_VERSION_ghc(9,10,0)
 p <-- e = withPlaceHolder $ BindStmt [] (builtPat p) (mkLocated e)
 #elif MIN_VERSION_ghc(9,0,0)
 p <-- e = withPlaceHolder $ withEpAnnNotUsed BindStmt (builtPat p) (mkLocated e)
