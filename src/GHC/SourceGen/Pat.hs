@@ -165,7 +165,7 @@ lazyP = withEpAnnNotUsed LazyPat . builtPat . parenthesize
 -- > =====
 -- > sigPat (bvar "x") (var "y")
 sigP :: Pat' -> HsType' -> Pat'
-#if MIN_VERSION_ghc(9,10,0)
+#if MIN_VERSION_ghc(9,13,0)
 sigP p t = SigPat NoEpUniTok (builtPat p) (patSigType t)
 #elif MIN_VERSION_ghc(9,10,0)
 sigP p t = SigPat [] (builtPat p) (patSigType t)

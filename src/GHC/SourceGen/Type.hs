@@ -43,7 +43,7 @@ import GHC.SourceGen.Type.Internal
 
 -- | A promoted name, for example from the @DataKinds@ extension.
 tyPromotedVar :: RdrNameStr -> HsType'
-#if MIN_VERSION_ghc(9,10,0)
+#if MIN_VERSION_ghc(9,13,0)
 tyPromotedVar = HsTyVar NoEpTok promoted . typeRdrName
 #elif MIN_VERSION_ghc(9,10,0)
 tyPromotedVar = HsTyVar [] promoted . typeRdrName

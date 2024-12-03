@@ -677,7 +677,7 @@ derivingNewtype = derivingWay (Just strat)
 derivingAnyclass :: [HsType'] -> HsDerivingClause'
 derivingAnyclass = derivingWay (Just strat)
   where
-#if MIN_VERSION_ghc(9,10,0)
+#if MIN_VERSION_ghc(9,13,0)
     strat = AnyclassStrategy NoEpTok
 #elif MIN_VERSION_ghc(9,10,0)
     strat = AnyclassStrategy []
