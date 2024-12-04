@@ -17,7 +17,7 @@ module GHC.SourceGen.Lit
     , frac
     ) where
 
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
 import GHC.Parser.Annotation (EpToken(NoEpTok))
 #endif
 #if MIN_VERSION_ghc(9,2,0)
@@ -52,7 +52,7 @@ instance HasLit HsExpr' where
 
 instance HasLit Pat' where
     lit = noExt LitPat
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     overLit l = withPlaceHolder
                     $ NPat NoEpTok (mkLocated l) Nothing noSyntaxExpr
 #elif MIN_VERSION_ghc(9,10,0)

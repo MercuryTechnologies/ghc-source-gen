@@ -66,7 +66,7 @@ v `asP` p =
 conP :: RdrNameStr -> [Pat'] -> Pat'
 conP c = conPat (valueRdrName c) . prefixCon . map (builtPat . parenthesize)
   where
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     conPat = ConPat (Nothing, Nothing)
 #elif MIN_VERSION_ghc(9,10,0)
     conPat = ConPat []
@@ -91,7 +91,7 @@ conP_ c = conP c []
 
 recordConP :: RdrNameStr -> [(RdrNameStr, Pat')] -> Pat'
 recordConP c fs =
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
   ConPat (Nothing, Nothing) (valueRdrName c)
         $ RecCon $ noExt HsRecFields (map mkRecField fs) Nothing -- No ".."
 #elif MIN_VERSION_ghc(9,10,0)
@@ -137,7 +137,7 @@ recordConP c fs =
 -- > =====
 -- > strictP (bvar x)
 strictP :: Pat' -> Pat'
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
 strictP = BangPat NoEpTok . builtPat . parenthesize
 #elif MIN_VERSION_ghc(9,10,0)
 strictP = BangPat [] . builtPat . parenthesize
@@ -151,7 +151,7 @@ strictP = withEpAnnNotUsed BangPat . builtPat . parenthesize
 -- > =====
 -- > lazyP (conP "A" [bvar x])
 lazyP :: Pat' -> Pat'
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
 lazyP = LazyPat NoEpTok . builtPat . parenthesize
 #elif MIN_VERSION_ghc(9,10,0)
 lazyP = LazyPat [] . builtPat . parenthesize
@@ -165,7 +165,7 @@ lazyP = withEpAnnNotUsed LazyPat . builtPat . parenthesize
 -- > =====
 -- > sigPat (bvar "x") (var "y")
 sigP :: Pat' -> HsType' -> Pat'
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
 sigP p t = SigPat NoEpUniTok (builtPat p) (patSigType t)
 #elif MIN_VERSION_ghc(9,10,0)
 sigP p t = SigPat [] (builtPat p) (patSigType t)

@@ -17,7 +17,7 @@ import GHC.Hs.Type as Types
 import SrcLoc (unLoc)
 #endif
 
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
 import GHC.Parser.Annotation (EpToken (NoEpTok), noAnn, noSpanAnchor)
 #elif MIN_VERSION_ghc(9,10,0)
 import GHC.Parser.Annotation (AnnParen (AnnParen), ParenType (AnnParens), noAnn, noSpanAnchor)
@@ -69,7 +69,7 @@ needsParenForApp t = case t of
     _ -> needsParenForOp t
 
 parTy :: LHsType GhcPs -> LHsType GhcPs
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
 parTy = mkLocated . HsParTy (NoEpTok, NoEpTok)
 #elif MIN_VERSION_ghc(9,10,0)
 parTy = mkLocated . HsParTy (AnnParen AnnParens noSpanAnchor noSpanAnchor)

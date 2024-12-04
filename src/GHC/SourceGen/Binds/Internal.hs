@@ -50,7 +50,7 @@ valBinds :: [RawValBind] -> HsLocalBinds'
 -- This case prevents GHC from printing an empty "where" clause:
 valBinds [] = noExt EmptyLocalBinds
 valBinds vbs =
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     HsValBinds noAnn
         $ withNoAnnSortKey ValBinds
             (map mkLocated binds)
@@ -126,7 +126,7 @@ matchGroup context matches =
   where
     matches' = mkLocated $ map (mkLocated . mkMatch) matches
     mkMatch :: RawMatch -> Match' LHsExpr'
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     mkMatch r = noExt Match context
                     (L noAnn (map builtPat $ map parenthesize $ rawMatchPats r))
                     (mkGRHSs $ rawMatchGRHSs r)

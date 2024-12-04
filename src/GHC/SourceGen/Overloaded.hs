@@ -44,7 +44,7 @@ import GHC.Hs
     , noSpanAnchor
 #endif
     )
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
 import GHC.Parser.Annotation (AnnList (..), AnnParen (..), noAnn)
 import Language.Haskell.Syntax.Type
 #elif MIN_VERSION_ghc(9,10,0)
@@ -96,7 +96,7 @@ instance Par Pat' where
 #endif
 
 instance Par HsType' where
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     par = HsParTy (NoEpTok, NoEpTok) . mkLocated
 #elif MIN_VERSION_ghc(9,10,0)
     par = HsParTy (AnnParen AnnParens noSpanAnchor noSpanAnchor) . mkLocated
@@ -166,7 +166,7 @@ class App e where
 infixl 2 @@
 
 instance App HsExpr' where
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     op x o y
         = noExt OpApp
             (parenthesizeExprForOp $ mkLocated x)
@@ -198,7 +198,7 @@ instance App HsExpr' where
 
 instance App HsType' where
     op x o y
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
         = noExt HsOpTy notPromoted (parenthesizeTypeForOp $ mkLocated x)
                 (typeRdrName o)
                 (parenthesizeTypeForOp $ mkLocated y)
@@ -229,7 +229,7 @@ unboxedTuple = tupleOf Unboxed
 
 instance HasTuple HsExpr' where
 
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     tupleOf b ts =
         ExplicitTuple (noSpanAnchor, noSpanAnchor) (map (noExt Present . mkLocated) ts) b
 #elif MIN_VERSION_ghc(9,10,0)
@@ -253,7 +253,7 @@ unitDataConName :: LIdP
 unitDataConName = mkLocated $ nameRdrName $ dataConName $ unitDataCon
 
 instance HasTuple HsType' where
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     tupleOf b = HsTupleTy (AnnParens NoEpTok NoEpTok) b' . map mkLocated
 #elif MIN_VERSION_ghc(9,10,0)
     tupleOf b = HsTupleTy (AnnParen AnnParens noSpanAnchor noSpanAnchor) b' . map mkLocated
@@ -270,7 +270,7 @@ instance HasTuple HsType' where
 
 instance HasTuple Pat' where
     tupleOf b ps =
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
         TuplePat (noSpanAnchor, noSpanAnchor) (map builtPat ps) b
 #elif MIN_VERSION_ghc(9,10,0)
         TuplePat [] (map builtPat ps) b
@@ -352,7 +352,7 @@ instance BVar HsExpr' where
     bvar = var . UnqualStr
 
 instance Var HsType' where
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     var = HsTyVar NoEpTok notPromoted . typeRdrName
 #elif MIN_VERSION_ghc(9,10,0)
     var = HsTyVar [] notPromoted . typeRdrName
@@ -363,7 +363,7 @@ instance Var HsType' where
 instance BVar HsType' where
     bvar = var . UnqualStr
 
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
 instance BVar HsTyVarBndr' where
     bvar v =
       HsTvb

@@ -77,7 +77,7 @@ import GHC.SourceGen.Type.Internal (sigWcType)
 -- > typeSigs ["f", "g"] (var "A")
 typeSigs :: HasValBind t => [OccNameStr] -> HsType' -> t
 typeSigs names t =
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     sigB $ TypeSig noAnn (map (typeRdrName . unqual) names)
         $ sigWcType t
 #elif MIN_VERSION_ghc(9,10,0)
@@ -127,7 +127,7 @@ funBindsWithFixity fixity name matches = bindB $ withPlaceHolder
     name' = valueRdrName $ unqual name
     occ = valueOccName name
     fixity' = fromMaybe (bool Prefix Infix $ isSymOcc occ) fixity
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
     context = FunRhs name' fixity' NoSrcStrict noAnn
 #else
     context = FunRhs name' fixity' NoSrcStrict
@@ -334,7 +334,7 @@ stmt e =
 -- > =====
 -- > bvar "x" <-- var "act"
 (<--) :: Pat' -> HsExpr' -> Stmt'
-#if MIN_VERSION_ghc(9,13,0)
+#if MIN_VERSION_ghc(9,12,0)
 p <-- e = withPlaceHolder $ BindStmt NoEpUniTok (builtPat p) (mkLocated e)
 #elif MIN_VERSION_ghc(9,10,0)
 p <-- e = withPlaceHolder $ BindStmt [] (builtPat p) (mkLocated e)
